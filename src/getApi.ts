@@ -5,7 +5,7 @@
  * @returns 取得結果
  */
 
-export async function getApi<T>(url: string, token: string): Promise<T> {
+export async function getApi<T>(url: string, token: string): Promise<T | null> {
   try {
     const response = await fetch(url, {
       method: "GET",
@@ -23,6 +23,6 @@ export async function getApi<T>(url: string, token: string): Promise<T> {
     return data as T;
   } catch (error) {
     console.error("Fetch error:", error);
-    throw error;
+    return null;
   }
 }

@@ -8,18 +8,21 @@
 export async function getAccessToken(
   clientId: string,
   clientSecret: string
-): Promise<string> {
+): Promise<string | null> {
   const base64 = btoa(`${clientId}:${clientSecret}`);
+  try {
+    const res = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: {
+        Authorization: `Basic ${base64}`,
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: "grant_type=client_credentials",
+    });
 
-  const res = await fetch("https://accounts.spotify.com/api/token", {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${base64}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: "grant_type=client_credentials",
-  });
-
-  const data = await res.json();
-  return data.access_token;
+    const data = await res.json();
+    return data.access_token;
+  } catch (error) {
+    return null;
+  }
 }
